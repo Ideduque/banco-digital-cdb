@@ -12,17 +12,6 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 public class ContaPoupanca extends Conta {
 
-
-    @Override
-    public void aplicarMensalidadeOuRendimento()
-    {
-        if (cliente == null || cliente.getCategoria() == null)
-        {
-            throw new IllegalStateException("Cliente ou categoria não pode ser nulo.");
-        }
-
-    }
-
     @Override
     public void processarMensalidade() {
         BigDecimal taxaAnual;

@@ -1,5 +1,6 @@
 package br.com.cdb.bancodigital.entity;
 
+import br.com.cdb.bancodigital.enums.TipoConta;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,9 @@ public abstract class Conta {
 
     private String numero;
 
+    @Enumerated(EnumType.STRING)
+    private TipoConta tipoConta;
+
     protected BigDecimal saldo = BigDecimal.ZERO;
 
     public void depositar(BigDecimal valor) {
@@ -35,8 +39,6 @@ public abstract class Conta {
         }
         return false;
     }
-
-    public abstract void aplicarMensalidadeOuRendimento();
 
     public abstract void processarMensalidade();
 }

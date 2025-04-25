@@ -8,11 +8,6 @@ import java.math.BigDecimal;
 public class ContaCorrente extends Conta {
 
     @Override
-    public void aplicarMensalidadeOuRendimento() {
-
-    }
-
-    @Override
     public void processarMensalidade()
     {
         BigDecimal taxa;
