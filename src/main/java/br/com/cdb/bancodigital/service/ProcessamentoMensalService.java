@@ -1,13 +1,11 @@
 package br.com.cdb.bancodigital.service;
 
+import br.com.cdb.bancodigital.Exception.SaldoInsuficienteException;
+import br.com.cdb.bancodigital.entity.ContaPoupanca;
 import br.com.cdb.bancodigital.repository.ContaCorrenteRepository;
 import br.com.cdb.bancodigital.repository.ContaPoupancaRepository;
-import br.com.cdb.bancodigital.entity.ContaPoupanca;
-import br.com.cdb.bancodigital.entity.ContaCorrente;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Service
 @RequiredArgsConstructor
@@ -16,20 +14,23 @@ public class ProcessamentoMensalService {
     private final ContaCorrenteRepository correnteRepository;
     private final ContaPoupancaRepository poupancaRepository;
 
-    private final ProcessamentoMensalService service;
-
-    @PostMapping("/mensal")
-    public ResponseEntity<String> processarMensal()
-    {
-        service.processarTodasContas();
-        return ResponseEntity.ok("Contas processadas com sucesso.");
-    }
-
     public void processarTodasContas()
     {
-        correnteRepository.findAll().forEach(ContaCorrente::processarMensalidade);
+        // Para cada conta corrente, aplica a lógica de taxa mensal (conforme categoria do cliente)
+        correnteRepository.findAll().forEach(conta ->
+        {
+            try
+            {
+                conta.processarMensalidade();
+            } catch (SaldoInsuficienteException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // Para cada conta poupança, aplica o rendimento mensal (conforme categoria do cliente)
         poupancaRepository.findAll().forEach(ContaPoupanca::processarMensalidade);
 
+        // Persiste todas as alterações imediatamente no banco de dados
         correnteRepository.flush();
         poupancaRepository.flush();
     }
