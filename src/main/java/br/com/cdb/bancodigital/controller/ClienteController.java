@@ -1,58 +1,54 @@
 package br.com.cdb.bancodigital.controller;
 
-import br.com.cdb.bancodigital.entity.Cliente;
+import br.com.cdb.bancodigital.dto.ClienteDTO;
 import br.com.cdb.bancodigital.service.ClienteService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/clientes")
-@RequiredArgsConstructor
-public class ClienteController {
-
+@RestController // Define que essa classe é um controlador REST
+@RequestMapping("/clientes") // Caminho base para todos os endpoints relacionados ao cliente
+@RequiredArgsConstructor // Lombok cria automaticamente o construtor para injeção de dependências
+public class ClienteController
+{
     private final ClienteService clienteService;
 
-    @PostMapping
-    public ResponseEntity<Cliente> cadastrar(@RequestBody @Valid Cliente cliente)
+    // Endpoint para cadastrar um novo cliente
+    @PostMapping // Método POST para cadastrar cliente
+    @ResponseStatus(HttpStatus.CREATED) // Retorna status 201 em caso de sucesso
+    public ClienteDTO cadastrarCliente(@RequestBody ClienteDTO clienteDTO)
     {
-        Cliente novoCliente = clienteService.cadastrarCliente(cliente);
-        return ResponseEntity.ok(novoCliente);
+        return clienteService.cadastrarCliente(clienteDTO); // Chama o serviço para cadastrar o cliente
     }
 
-    @GetMapping
-    public List<Cliente> listar()
+    // Endpoint para listar todos os clientes
+    @GetMapping // Método GET para listar clientes
+    public List<ClienteDTO> listarTodos()
     {
-        return clienteService.listarTodos();
+        return clienteService.listarTodos(); // Chama o serviço para listar todos os clientes
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id)
+    // Endpoint para buscar um cliente por ID
+    @GetMapping("/{id}") // Método GET para buscar cliente por ID
+    public ClienteDTO buscarPorId(@PathVariable Long id)
     {
-        return clienteService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return clienteService.buscarPorId(id); // Chama o serviço para buscar o cliente
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @RequestBody Cliente cliente)
+    // Endpoint para atualizar os dados de um cliente
+    @PutMapping("/{id}") // Método PUT para atualizar cliente
+    public ClienteDTO atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO)
     {
-        Cliente clienteAtualizado = clienteService.atualizarCliente(id, cliente);
-        return ResponseEntity.ok(clienteAtualizado);
+        return clienteService.atualizarCliente(id, clienteDTO); // Chama o serviço para atualizar o cliente
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id)
+    // Endpoint para deletar um cliente
+    @DeleteMapping("/{id}") // Método DELETE para deletar cliente
+    @ResponseStatus(HttpStatus.NO_CONTENT) // Retorna status 204 em caso de sucesso
+    public void deletarCliente(@PathVariable Long id)
     {
-        try
-        {
-            clienteService.deletarCliente(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build(); // Retorna 404 caso o cliente não seja encontrado
-        }
+        clienteService.deletarCliente(id); // Chama o serviço para deletar o cliente
     }
 }
