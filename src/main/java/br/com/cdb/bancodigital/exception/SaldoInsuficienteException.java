@@ -1,4 +1,4 @@
-package br.com.cdb.bancodigital.Exception;
+package br.com.cdb.bancodigital.exception;
 
 public class SaldoInsuficienteException extends Throwable
 {

@@ -1,6 +1,6 @@
 package br.com.cdb.bancodigital.entity;
 
-import br.com.cdb.bancodigital.Exception.SaldoInsuficienteException;
+import br.com.cdb.bancodigital.exception.SaldoInsuficienteException;
 import br.com.cdb.bancodigital.enums.TipoConta;
 import jakarta.persistence.*;
 import lombok.*;

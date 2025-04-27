@@ -1,6 +1,6 @@
 package br.com.cdb.bancodigital.service;
 
-import br.com.cdb.bancodigital.Exception.SaldoInsuficienteException;
+import br.com.cdb.bancodigital.exception.SaldoInsuficienteException;
 import br.com.cdb.bancodigital.entity.ContaPoupanca;
 import br.com.cdb.bancodigital.repository.ContaCorrenteRepository;
 import br.com.cdb.bancodigital.repository.ContaPoupancaRepository;
