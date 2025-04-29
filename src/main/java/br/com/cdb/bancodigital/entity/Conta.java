@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Entity // Indica que esta classe é uma entidade JPA (vai virar uma tabela no banco)
 @Inheritance(strategy = InheritanceType.JOINED) // Define a estratégia de herança entre entidades: cada classe filha terá sua própria tabela, mas relacionada à tabela "conta"
 @Data // Lombok: gera automaticamente getters, setters, equals, hashCode e toString
-@NoArgsConstructor // Lombok: gera construtor sem argumentos
+@NoArgsConstructor
 @AllArgsConstructor // Lombok: gera construtor com todos os argumentos
 public abstract class Conta {
 
@@ -30,7 +30,8 @@ public abstract class Conta {
     // Saldo da conta, iniciado com zero. BigDecimal é o tipo ideal para valores monetários
     protected BigDecimal saldo = BigDecimal.ZERO;
 
-    public void depositar(BigDecimal valor) {
+    public void depositar(BigDecimal valor)
+    {
         saldo = saldo.add(valor);
     }
 

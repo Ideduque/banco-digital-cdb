@@ -1,18 +1,13 @@
 package br.com.cdb.bancodigital.entity;
 
 import jakarta.persistence.Entity;
-import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ContaPoupanca extends Conta
 {
-
     @Override
     public void processarMensalidade() //Aplica rendimento mensal com base na categoria do cliente.
     {
