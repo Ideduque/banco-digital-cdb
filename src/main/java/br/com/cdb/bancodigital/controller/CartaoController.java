@@ -1,10 +1,11 @@
 package br.com.cdb.bancodigital.controller;
 
-import br.com.cdb.bancodigital.exception.CartaoNaoEncontradoException;
-import br.com.cdb.bancodigital.exception.LimiteExcedidoException;
+import br.com.cdb.bancodigital.dto.CartaoDTO;
+import br.com.cdb.bancodigital.entity.Conta;
+import br.com.cdb.bancodigital.enums.TipoCartao;
 import br.com.cdb.bancodigital.service.CartaoService;
+import br.com.cdb.bancodigital.service.ContaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,86 +17,77 @@ import java.math.BigDecimal;
 public class CartaoController
 {
     private final CartaoService cartaoService;
+    private final ContaService contaService;
 
-    // Alterar o status do cartão (ativo/desativado)
+    // Emissão de novo cartão
+    @PostMapping("/emitir")
+    public CartaoDTO emitirCartao(
+            @RequestParam TipoCartao tipoCartao,
+            @RequestParam String contaId,
+            @RequestParam String senha,
+            @RequestParam BigDecimal limite)
+    {
+        Conta conta = contaService.buscarPorId(Long.valueOf(contaId));
+        return cartaoService.emitirCartao(tipoCartao, conta, senha, limite);
+    }
+
+    // Alterar status (ativo ou inativo) do cartão
     @PostMapping("/{cartaoId}/alterar-status")
     public ResponseEntity<String> alterarStatus(@PathVariable String cartaoId, @RequestParam boolean status)
     {
-        try
-        {
-            String mensagem = cartaoService.alterarStatusCartao(cartaoId, status);
-            return ResponseEntity.ok(mensagem); // Retorna 200 OK com a mensagem
-        } catch (CartaoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // Retorna 404 Not Found
-        }
+        String cartaoDTO = String.valueOf(cartaoService.alterarStatusCartao(cartaoId, status));
+        return ResponseEntity.ok(cartaoDTO);
     }
 
     // Alterar a senha do cartão
     @PostMapping("/{cartaoId}/alterar-senha")
     public ResponseEntity<String> alterarSenha(@PathVariable String cartaoId, @RequestParam String novaSenha)
     {
-        try
+        if (novaSenha == null || novaSenha.isBlank())
         {
-            String mensagem = cartaoService.alterarSenha(cartaoId, novaSenha);
-            return ResponseEntity.ok(mensagem); // Retorna 200 OK com a mensagem
-        } catch (CartaoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // Retorna 404 Not Found
+            return ResponseEntity.badRequest().body("Nova senha não pode ser vazia.");
         }
+        String mensagem = cartaoService.alterarSenha(cartaoId, novaSenha);
+        return ResponseEntity.ok(mensagem);
     }
 
-    // Consultar o limite de crédito de um cartão
+    // Consultar o limite de crédito disponível
     @GetMapping("/{cartaoId}/limite-credito")
     public ResponseEntity<BigDecimal> verificarLimiteCredito(@PathVariable String cartaoId)
     {
-        try
-        {
-            BigDecimal limiteCredito = cartaoService.verificarLimiteCredito(cartaoId);
-            return ResponseEntity.ok(limiteCredito); // Retorna 200 OK com o limite de crédito
-        } catch (CartaoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Retorna 404 Not Found
-        }
+        BigDecimal limite = cartaoService.verificarLimiteCredito(cartaoId);
+        return ResponseEntity.ok(limite);
     }
 
-    // Consultar o limite de débito de um cartão
+    // Consultar o limite de débito diário
     @GetMapping("/{cartaoId}/limite-debito")
     public ResponseEntity<BigDecimal> verificarLimiteDebito(@PathVariable String cartaoId)
     {
-        try
-        {
-            BigDecimal limiteDebito = cartaoService.verificarLimiteDebito(cartaoId);
-            return ResponseEntity.ok(limiteDebito); // Retorna 200 OK com o limite de débito
-        } catch (CartaoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Retorna 404 Not Found
-        }
+        BigDecimal limite = cartaoService.verificarLimiteDebito(cartaoId);
+        return ResponseEntity.ok(limite);
     }
 
-    // Realizar o pagamento no cartão de crédito
+    // Realizar pagamento utilizando o crédito
     @PostMapping("/{cartaoId}/pagamento-credito")
     public ResponseEntity<String> realizarPagamentoCredito(@PathVariable String cartaoId, @RequestParam BigDecimal valor)
     {
-        try
+        if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0)
         {
-            String mensagem = cartaoService.realizarPagamentoCredito(cartaoId, valor);
-            return ResponseEntity.ok(mensagem); // Retorna 200 OK com a mensagem
-        } catch (CartaoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // Retorna 404 Not Found
-        } catch (LimiteExcedidoException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // Retorna 400 Bad Request
+            return ResponseEntity.badRequest().body("O valor do pagamento deve ser maior que zero.");
         }
+        String mensagem = cartaoService.realizarPagamentoCredito(cartaoId, valor);
+        return ResponseEntity.ok(mensagem);
     }
 
-    // Realizar o pagamento no cartão de débito
+    // Realizar pagamento utilizando o débito
     @PostMapping("/{cartaoId}/pagamento-debito")
     public ResponseEntity<String> realizarPagamentoDebito(@PathVariable String cartaoId, @RequestParam BigDecimal valor)
     {
-        try
+        if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0)
         {
-            String mensagem = cartaoService.realizarPagamentoDebito(cartaoId, valor);
-            return ResponseEntity.ok(mensagem); // Retorna 200 OK com a mensagem
-        } catch (CartaoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // Retorna 404 Not Found
-        } catch (LimiteExcedidoException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // Retorna 400 Bad Request
+            return ResponseEntity.badRequest().body("O valor do pagamento deve ser maior que zero.");
         }
+        String mensagem = cartaoService.realizarPagamentoDebito(cartaoId, valor);
+        return ResponseEntity.ok(mensagem);
     }
 }
