@@ -7,7 +7,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Entity
-@DiscriminatorValue("DEBITO") // Define o valor salvo na coluna tipo_cartao do banco de dados
+//@DiscriminatorValue("DEBITO") // Define o valor salvo na coluna tipo_cartao do banco de dados
 @Data
 public class CartaoDebito extends Cartao
 {

@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Seguro {
-
+public class Seguro
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

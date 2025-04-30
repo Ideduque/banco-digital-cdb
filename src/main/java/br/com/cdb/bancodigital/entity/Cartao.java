@@ -9,16 +9,15 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)  // Usando a estratégia SINGLE_TABLE para armazenar diferentes tipos de cartão na mesma tabela
-@DiscriminatorColumn(name = "tipo_cartao")  // Coluna para discriminar os tipos de cartão
+//@DiscriminatorColumn(name = "tipo_cartao")  // Coluna para discriminar os tipos de cartão
 @Data  // Lombok: gera automaticamente os métodos getters, setters, equals, hashCode e toString
 @NoArgsConstructor  // Lombok: gera o construtor sem parâmetros
 @AllArgsConstructor  // Lombok: gera o construtor com todos os parâmetros
 @SuperBuilder
-public abstract class Cartao {
-
+public abstract class Cartao
+{
     @Id
     private String id = UUID.randomUUID().toString();  // Geração automática de ID utilizando UUID
 
@@ -49,7 +48,8 @@ public abstract class Cartao {
     private TipoCartao tipoCartao;
 
     // Construtor para criação de um novo cartão, recebendo conta, senha, número e tipo do cartão
-    public Cartao(Conta conta, String senha, String numero, TipoCartao tipoCartao) {
+    public Cartao(Conta conta, String senha, String numero, TipoCartao tipoCartao)
+    {
         this.conta = conta;
         this.senha = senha;
         this.numero = numero;
@@ -59,8 +59,10 @@ public abstract class Cartao {
 
     // Método executado antes de persistir a entidade, garantindo que o ID seja gerado se não estiver presente
     @PrePersist
-    private void prePersist() {
-        if (this.id == null) {
+    private void prePersist()
+    {
+        if (this.id == null)
+        {
             this.id = UUID.randomUUID().toString();  // Geração do ID se não definido
         }
     }

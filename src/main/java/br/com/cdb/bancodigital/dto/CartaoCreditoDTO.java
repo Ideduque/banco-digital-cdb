@@ -5,8 +5,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class CartaoCreditoDTO {
-
+public class CartaoCreditoDTO
+{
     @NotNull(message = "O ID da conta é obrigatório")  // Valida que o ID da conta não seja nulo
     private Long contaId;
 
@@ -17,7 +17,8 @@ public class CartaoCreditoDTO {
     private BigDecimal limite;
 
     // Construtor adicional (opcional) para facilitar a criação do DTO de forma controlada
-    public CartaoCreditoDTO(Long contaId, String senha, BigDecimal limite) {
+    public CartaoCreditoDTO(Long contaId, String senha, BigDecimal limite)
+    {
         this.contaId = contaId;
         this.senha = senha;
         this.limite = limite;

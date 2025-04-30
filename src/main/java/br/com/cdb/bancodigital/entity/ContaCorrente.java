@@ -6,11 +6,11 @@ import jakarta.persistence.Entity;
 import java.math.BigDecimal;
 
 @Entity
-public class ContaCorrente extends Conta {
-
-
+public class ContaCorrente extends Conta
+{
     @Override
-    public void processarMensalidade() throws SaldoInsuficienteException {
+    public void processarMensalidade() throws SaldoInsuficienteException
+    {
         BigDecimal taxa;
 
         // Define o valor da taxa de mensalidade de acordo com a categoria do cliente:
@@ -23,7 +23,8 @@ public class ContaCorrente extends Conta {
         }
 
         // Verifica se há saldo suficiente antes de cobrar a taxa
-        if (saldo.compareTo(taxa) < 0) {
+        if (saldo.compareTo(taxa) < 0)
+        {
             throw new SaldoInsuficienteException("Saldo insuficiente para cobrança da mensalidade.");
         }
 

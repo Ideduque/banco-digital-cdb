@@ -5,7 +5,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class PagamentoCreditoDTO {
+public class PagamentoCreditoDTO
+{
     private Long cartaoId;
     private String senha;
     private BigDecimal valor;

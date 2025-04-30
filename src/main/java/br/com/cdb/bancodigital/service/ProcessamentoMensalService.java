@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProcessamentoMensalService {
-
+public class ProcessamentoMensalService
+{
     private final ContaCorrenteRepository correnteRepository;
     private final ContaPoupancaRepository poupancaRepository;
 

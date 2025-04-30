@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class PixService {
-
+public class PixService
+{
     private final ContaRepository contaRepository;
     private final PixRepository pixRepository;
 

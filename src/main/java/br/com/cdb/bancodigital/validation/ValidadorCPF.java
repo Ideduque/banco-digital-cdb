@@ -1,7 +1,5 @@
 package br.com.cdb.bancodigital.validation;
 
-import jakarta.validation.constraints.NotBlank;
-
 public class ValidadorCPF
 {
     public static boolean validarCPF(String cpf)

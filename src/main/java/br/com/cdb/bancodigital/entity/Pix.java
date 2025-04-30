@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Pix {
-
+public class Pix
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

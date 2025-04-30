@@ -1,10 +1,7 @@
 package br.com.cdb.bancodigital.service;
 
-import br.com.cdb.bancodigital.dto.SeguroDTO;
-import br.com.cdb.bancodigital.entity.Cartao;
 import br.com.cdb.bancodigital.entity.CartaoCredito;
 import br.com.cdb.bancodigital.entity.Seguro;
-import br.com.cdb.bancodigital.enums.Categoria;
 import br.com.cdb.bancodigital.enums.TipoSeguro;
 import br.com.cdb.bancodigital.repository.SeguroRepository;
 import br.com.cdb.bancodigital.repository.CartaoCreditoRepository;
@@ -14,17 +11,17 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class SeguroService {
-
+public class SeguroService
+{
     private final SeguroRepository seguroRepository;
     private final CartaoCreditoRepository creditoRepository;
 
-    public String contratarSeguroViagem(String cartaoCreditoId) {
+    public String contratarSeguroViagem(String cartaoCreditoId)
+    {
         CartaoCredito cartao = creditoRepository.findById(Long.valueOf(cartaoCreditoId))
                 .orElseThrow(() -> new EntityNotFoundException("Cartão de crédito não encontrado"));
 
@@ -43,7 +40,8 @@ public class SeguroService {
         return String.format("Seguro de viagem contratado com sucesso! Valor: R$ %s", valor);
     }
 
-    public String contratarSeguroFraude(String cartaoCreditoId) {
+    public String contratarSeguroFraude(String cartaoCreditoId)
+    {
         CartaoCredito cartao = creditoRepository.findById(Long.valueOf(cartaoCreditoId))
                 .orElseThrow(() -> new EntityNotFoundException("Cartão de crédito não encontrado"));
 

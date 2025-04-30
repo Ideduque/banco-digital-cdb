@@ -4,6 +4,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class LimiteDebitoDTO {
+public class LimiteDebitoDTO
+{
     private BigDecimal novoLimite;
 }

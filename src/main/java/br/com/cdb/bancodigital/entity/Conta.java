@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 @Data // Lombok: gera automaticamente getters, setters, equals, hashCode e toString
 @NoArgsConstructor
 @AllArgsConstructor // Lombok: gera construtor com todos os argumentos
-public abstract class Conta {
-
+public abstract class Conta
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id; // Identificador único da conta, gerado automaticamente pelo banco
@@ -35,7 +35,8 @@ public abstract class Conta {
         saldo = saldo.add(valor);
     }
 
-    public boolean sacar(BigDecimal valor) {
+    public boolean sacar(BigDecimal valor)
+    {
         if (saldo.compareTo(valor) >= 0) { // Verifica se o saldo é suficiente
             saldo = saldo.subtract(valor);
             return true;

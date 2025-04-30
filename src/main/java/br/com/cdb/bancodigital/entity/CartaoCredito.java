@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 
 @Slf4j
 @Entity
-@DiscriminatorValue("CREDITO") // Valor da coluna discriminadora na herança SINGLE_TABLE
+//@DiscriminatorValue("CREDITO") // Valor da coluna discriminadora na herança SINGLE_TABLE
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
