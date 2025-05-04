@@ -47,5 +47,3 @@ public class Cliente
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
 }
-
-

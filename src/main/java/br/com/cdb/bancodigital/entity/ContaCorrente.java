@@ -8,6 +8,25 @@ import java.math.BigDecimal;
 @Entity
 public class ContaCorrente extends Conta
 {
+    private BigDecimal limite;
+
+    //Define o limite da conta corrente com base na categoria do cliente.
+    public void definirLimitePorCategoria()
+    {
+        if (this.cliente == null || this.cliente.getCategoria() == null)
+        {
+            throw new IllegalStateException("Cliente ou categoria não definida");
+        }
+
+        switch (this.cliente.getCategoria())
+        {
+            case COMUM -> this.limite = new BigDecimal("500.00");
+            case SUPER -> this.limite = new BigDecimal("1000.00");
+            case PREMIUM -> this.limite = new BigDecimal("2000.00");
+            default -> throw new IllegalArgumentException("Categoria inválida");
+        }
+    }
+
     @Override
     public void processarMensalidade() throws SaldoInsuficienteException
     {

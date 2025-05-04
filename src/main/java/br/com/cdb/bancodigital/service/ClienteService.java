@@ -7,12 +7,13 @@ import br.com.cdb.bancodigital.entity.Endereco;
 import br.com.cdb.bancodigital.repository.ClienteRepository;
 import br.com.cdb.bancodigital.validation.ValidadorCPF;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service // Define que essa classe é um serviço gerenciado pelo Spring
@@ -66,17 +67,17 @@ public class ClienteService
     public ClienteDTO buscarPorId(Long id)
     {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
 
         // Converte o Cliente para ClienteDTO e retorna
         return toDTO(cliente);
     }
 
     // Método para atualizar os dados de um cliente existente, usando ClienteDTO
-    public ClienteDTO atualizarCliente(Long id, ClienteDTO clienteDTO)
+    public ClienteDTO atualizarCliente(Long clienteId, ClienteDTO clienteDTO)
     {
-        Cliente clienteExistente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+        Cliente clienteExistente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
 
         // Atualiza os dados do cliente com os novos dados do ClienteDTO
         clienteExistente.setNome(clienteDTO.getNome());
