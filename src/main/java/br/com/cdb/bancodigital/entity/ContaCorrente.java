@@ -2,10 +2,12 @@ package br.com.cdb.bancodigital.entity;
 
 import br.com.cdb.bancodigital.exception.SaldoInsuficienteException;
 import jakarta.persistence.Entity;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Entity
+@Data
 public class ContaCorrente extends Conta
 {
     private BigDecimal limite;

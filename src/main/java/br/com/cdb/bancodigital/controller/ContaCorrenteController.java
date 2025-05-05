@@ -1,11 +1,9 @@
 package br.com.cdb.bancodigital.controller;
 
 import br.com.cdb.bancodigital.dto.ContaCorrenteDTO;
-import br.com.cdb.bancodigital.entity.Cliente;
 import br.com.cdb.bancodigital.entity.ContaCorrente;
-import br.com.cdb.bancodigital.enums.TipoConta;
-import br.com.cdb.bancodigital.repository.ClienteRepository;
-import br.com.cdb.bancodigital.repository.ContaCorrenteRepository;
+import br.com.cdb.bancodigital.exception.SaldoInsuficienteException;
+import br.com.cdb.bancodigital.service.ContaCorrenteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,90 +14,77 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-@RestController // Indica que essa classe trata requisições REST
-@RequestMapping("/contas/corrente") // Define a URL base para as operações com conta corrente
+@RestController
+@RequestMapping("/contas/corrente")
 public class ContaCorrenteController
 {
     @Autowired
-    private ContaCorrenteRepository contaCorrenteRepository; // Injeta o repositório da conta corrente
+    private ContaCorrenteService contaCorrenteService;
 
-    @Autowired
-    private ClienteRepository clienteRepository; // Injeta o repositório de clientes
-
-    // Criar nova conta
+    // Cria uma nova conta corrente
     @PostMapping
     public ResponseEntity<ContaCorrente> criarConta(@RequestBody ContaCorrenteDTO dto)
     {
-        Optional<Cliente> clienteOptional = clienteRepository.findById(dto.getClienteId());
-
-        if (clienteOptional.isEmpty())
-        {
-            return ResponseEntity.notFound().build(); // Cliente não encontrado
-        }
-
-        ContaCorrente conta = new ContaCorrente();
-        conta.setCliente(clienteOptional.get());
-        conta.setNumero(dto.getNumero());
-        conta.setTipoConta(TipoConta.CORRENTE); // Define o tipo como CORRENTE
-        conta.setSaldo(BigDecimal.ZERO); // Saldo inicial
-
-        // Chama o método que define o limite com base na categoria do cliente
-        conta.definirLimitePorCategoria();
-
-        ContaCorrente salva = contaCorrenteRepository.save(conta);
-        return ResponseEntity.status(HttpStatus.CREATED).body(salva);
+        ContaCorrente conta = contaCorrenteService.criarConta(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(conta);
     }
 
-    // Lista todas contas
+    // Lista todas as contas correntes
     @GetMapping
-    public List<ContaCorrente> listarContas()
+    public ResponseEntity<List<ContaCorrente>> listarContas()
     {
-        return contaCorrenteRepository.findAll();
+        List<ContaCorrente> contas = contaCorrenteService.listarContas();
+        return ResponseEntity.ok(contas);
     }
 
-    // Busca conta por ID
+    // Busca uma conta corrente pelo ID
     @GetMapping("/{id}")
-    public ResponseEntity<ContaCorrente> buscarPorId(@PathVariable Long id)
+    public ResponseEntity<Optional<ContaCorrente>> buscarPorId(@PathVariable Long id)
     {
-        return contaCorrenteRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<ContaCorrente> conta = contaCorrenteService.buscarPorId(id);
+        return ResponseEntity.ok(conta);
     }
 
-    // Atualizar conta corrente
+    // Atualiza uma conta corrente existente
     @PutMapping("/{id}")
     public ResponseEntity<ContaCorrente> atualizarConta(@PathVariable Long id, @RequestBody ContaCorrenteDTO dto)
     {
-        Optional<ContaCorrente> contaOpt = contaCorrenteRepository.findById(id);
-        if (contaOpt.isEmpty())
-        {
-            return ResponseEntity.notFound().build();
-        }
-
-        Optional<Cliente> clienteOptional = clienteRepository.findById(dto.getClienteId());
-        if (clienteOptional.isEmpty())
-        {
-            return ResponseEntity.badRequest().build();
-        }
-
-        ContaCorrente conta = contaOpt.get();
-        conta.setCliente(clienteOptional.get());
-        conta.setNumero(dto.getNumero());
-
-        ContaCorrente atualizada = contaCorrenteRepository.save(conta);
-        return ResponseEntity.ok(atualizada);
+        ContaCorrente contaAtualizada = contaCorrenteService.atualizarConta(id, dto);
+        return ResponseEntity.ok(contaAtualizada);
     }
 
-    // Deleta conta
+    // Deleta uma conta corrente pelo ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarConta(@PathVariable Long id)
     {
-        if (!contaCorrenteRepository.existsById(id))
-        {
-            return ResponseEntity.notFound().build();
-        }
-
-        contaCorrenteRepository.deleteById(id);
+        contaCorrenteService.deletarConta(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    // Aplica a mensalidade da conta corrente com base na categoria do cliente
+    @PostMapping("/{id}/aplicar-mensalidade")
+    public ResponseEntity<Void> aplicarMensalidade(@PathVariable Long id)
+    {
+        try
+        {
+            contaCorrenteService.aplicarMensalidade(id);
+            return ResponseEntity.ok().build();
+        } catch (SaldoInsuficienteException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // Realiza um saque na conta corrente, considerando o limite disponível
+    @PostMapping("/{id}/sacar")
+    public ResponseEntity<Void> sacar(@PathVariable Long id, @RequestParam BigDecimal valor)
+    {
+        try
+        {
+            contaCorrenteService.sacar(id, valor);
+            return ResponseEntity.ok().build();
+        } catch (SaldoInsuficienteException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }
