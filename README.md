@@ -3,7 +3,6 @@
 Esta é uma API RESTful para um sistema de **Banco Digital**, desenvolvida com **Java (Spring Boot)**, **IntelliJ IDEA** e **MySQL**.
 A aplicação permite o cadastro de clientes, criação de contas, emissão de cartões, operações bancárias (como PIX, transferências, rendimentos, saque e depósito), faturas e seguros.
 
-Esse projeto foi desenvolvido para a conclusão do Curso de Java do EDUC360 - Codigo de Base
 
 ![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
 
@@ -92,12 +91,41 @@ cd banco-digital-api
 
 > Os endpoints foram testados e validados com o **Postman**.
 
+
+## 🧪 Exemplo de Requisição para Criar um Cliente
+
+```
+POST /clientes
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "cpf": "123.456.789-01", (CPF tem que ser original) 
+  "dataNascimento": "1990-05-15",
+  "endereco": {
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "complemento": "casa 1"
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "cep": "01234-567"
+  }
+}
+```
+
+## 🎯 Melhorias Futuras
+
+- Integração com Front-end: Desenvolver uma interface web utilizando frameworks modernos como React, Angular ou Vue.js para consumir a API e proporcionar uma melhor experiência ao usuário.
+
+- Autenticação e Autorização: Implementar segurança na API utilizando Spring Security e JWT, garantindo que apenas usuários autenticados possam acessar determinados recursos.
+
+- Validações Avançadas: Adicionar validações mais robustas nos campos dos modelos, utilizando anotações como @NotNull, @Email, @Size, entre outras.
+
+- Testes Automatizados: Criar testes unitários e de integração para garantir a qualidade e confiabilidade da aplicação.
+
 ## 👩‍💻 Autoria
 
 Desenvolvido por **Joseilde Duque**  
 Projeto pessoal para prática de back-end com Java e Spring Boot.
-
-
-   
-
+Projeto desenvolvido para a conclusão do Curso de Java do EDUC360 - Codigo de Base
 
