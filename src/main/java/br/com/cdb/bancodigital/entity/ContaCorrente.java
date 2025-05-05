@@ -57,6 +57,25 @@ public class ContaCorrente extends Conta
     @Override
     public void processarMensalidade() throws SaldoInsuficienteException
     {
+        BigDecimal taxa = getBigDecimal();
+
+        // Verifica saldo
+        if (saldo.compareTo(taxa) < 0)
+        {
+            throw new SaldoInsuficienteException("Saldo insuficiente para cobrança da mensalidade.");
+        }
+
+        // Log antes de debitar
+        log.info("ContaCorrente ID={} — saldo antes={}, taxa={}", getId(), saldo, taxa);
+
+        // Atualiza saldo
+        this.saldo = saldo.subtract(taxa);
+
+        // Log após debitar
+        log.info("ContaCorrente ID={} — novo saldo={}", getId(), saldo);
+    }
+
+    private BigDecimal getBigDecimal() {
         if (cliente == null)
         {
             throw new IllegalStateException("Cliente não associado à conta");
@@ -73,20 +92,6 @@ public class ContaCorrente extends Conta
             case SUPER    -> TAXA_SUPER;
             case PREMIUM  -> TAXA_PREMIUM;
         };
-
-        // Verifica saldo
-        if (saldo.compareTo(taxa) < 0)
-        {
-            throw new SaldoInsuficienteException("Saldo insuficiente para cobrança da mensalidade.");
-        }
-
-        // Log antes de debitar
-        log.info("ContaCorrente ID={} — saldo antes={}, taxa={}", getId(), saldo, taxa);
-
-        // Atualiza saldo
-        this.saldo = saldo.subtract(taxa);
-
-        // Log após debitar
-        log.info("ContaCorrente ID={} — novo saldo={}", getId(), saldo);
+        return taxa;
     }
 }
